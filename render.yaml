@@ -3,7 +3,7 @@ services:
     name: laravel-api
     env: docker
     plan: free
-    buildCommand: ""
+    buildCommand: ./render-build.sh
     startCommand: ""
     autoDeploy: true
     envVars:
@@ -16,7 +16,7 @@ services:
       - key: APP_URL
         value: https://<to-be-generated>.onrender.com
       - key: DB_CONNECTION
-        value: pgsql
+        value: pgsql # or mysql
       - key: DB_HOST
         fromDatabase:
           name: your-database-name
