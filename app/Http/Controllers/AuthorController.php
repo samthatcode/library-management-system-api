@@ -1,5 +1,40 @@
 <?php
 
+/**
+ * @OA\Schema(
+ *     schema="Book",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="title", type="string"),
+ *     @OA\Property(property="description", type="string"),
+ *     @OA\Property(property="isbn", type="integer"),
+ *     @OA\Property(property="publication_date", type="string", format="date"),
+ *     @OA\Property(
+ *         property="authors",
+ *         type="array",
+ *         @OA\Items(ref="#/components/schemas/Author")
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="Author",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="first_name", type="string"),
+ *     @OA\Property(property="last_name", type="string"),
+ *     @OA\Property(property="books", type="array", @OA\Items(ref="#/components/schemas/Book"))
+ * )
+ *
+ * @OA\Schema(
+ *     schema="Patron",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="name", type="string"),
+ *     @OA\Property(property="email", type="string"),
+ *     @OA\Property(property="books", type="array", @OA\Items(ref="#/components/schemas/Book"))
+ * )
+ */
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAuthorRequest;
@@ -16,12 +51,12 @@ class AuthorController extends Controller
      * Then, we have access to the service in whatever methods we need
      */
 
-     private AuthorService $authorService;
+    private AuthorService $author_service;
 
-     public function __construct(AuthorService $authorService)
-     {
-         $this->authorService = $authorService;
-     }
+    public function __construct(AuthorService $author_service)
+    {
+        $this->author_service = $author_service;
+    }
 
     /**
      * Authors
@@ -29,8 +64,10 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        return response()->json(AuthorResource::collection($this->authorService->getAllAuthors()),
-        Response::HTTP_OK) ;
+        return response()->json(
+            AuthorResource::collection($this->author_service->getAllAuthors()),
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -39,8 +76,10 @@ class AuthorController extends Controller
      */
     public function store(StoreAuthorRequest $request)
     {
-        return response()->json(new AuthorResource($this->authorService->create($request->validated())),
-        Response::HTTP_CREATED);
+        return response()->json(
+            new AuthorResource($this->author_service->create($request->validated())),
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -55,8 +94,10 @@ class AuthorController extends Controller
         }
 
         // If author exists
-        return response()->json(new AuthorResource($this->authorService->update($request->validated(), $author)),
-        Response::HTTP_OK);
+        return response()->json(
+            new AuthorResource($this->author_service->update($request->validated(), $author)),
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -71,9 +112,11 @@ class AuthorController extends Controller
         }
 
         // If author exists
-        $this->authorService->delete($author);
+        $this->author_service->delete($author);
 
-        return response()->json(['message' => 'Author deleted successfully'],
-        Response::HTTP_OK);
+        return response()->json(
+            ['message' => 'Author deleted successfully'],
+            Response::HTTP_OK
+        );
     }
 }

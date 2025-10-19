@@ -11,11 +11,11 @@ use Illuminate\Http\Response;
 
 class PatronController extends Controller
 {
-    protected $patronService;
+    protected $patron_service;
 
-    public function __construct(PatronService $patronService)
+    public function __construct(PatronService $patron_service)
     {
-        $this->patronService = $patronService;
+        $this->patron_service = $patron_service;
     }
     /**
      * Patrons
@@ -23,8 +23,10 @@ class PatronController extends Controller
      */
     public function index()
     {
-        return response()->json(PatronResource::collection($this->patronService->getPatronsWithBooks()),
-        Response::HTTP_OK) ;
+        return response()->json(
+            PatronResource::collection($this->patron_service->getPatronsWithBooks()),
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -33,9 +35,13 @@ class PatronController extends Controller
      */
     public function store(StorePatronRequest $request)
     {
-        return response()->json(['message' => 'Patron created successfully',
-        'data' => $this->patronService->create($request->validated())],
-        Response::HTTP_CREATED);
+        return response()->json(
+            [
+                'message' => 'Patron created successfully',
+                'data' => $this->patron_service->create($request->validated())
+            ],
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -48,9 +54,13 @@ class PatronController extends Controller
         if (!$patron) {
             return response()->json(['error' => 'Patron not found'], Response::HTTP_NOT_FOUND);
         }
-        return response()->json(['message' => 'Patron updated successfully',
-        'data' => $this->patronService->update($request->validated(), $patron)],
-        Response::HTTP_OK);
+        return response()->json(
+            [
+                'message' => 'Patron updated successfully',
+                'data' => $this->patron_service->update($request->validated(), $patron)
+            ],
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -60,7 +70,7 @@ class PatronController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            $this->patronService->deletePatron($id);
+            $this->patron_service->deletePatron($id);
             return response()->json([
                 'message' => 'Patron deleted successfully',
                 'data' => null // No data to return after deletion
@@ -82,7 +92,7 @@ class PatronController extends Controller
             return response()->json(['error' => 'Patron not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $borrowed = $this->patronService->borrowBook($patron->id, $bookId);
+        $borrowed = $this->patron_service->borrowBook($patron->id, $bookId);
 
         if ($borrowed) {
             return response()->json(['message' => 'Book borrowed successfully'], Response::HTTP_OK);
@@ -96,14 +106,13 @@ class PatronController extends Controller
      * Point 4: Return Book
      */
 
-     public function returnBook(Request $request, $patronId, $bookId)
-     {
-        $book = $this->patronService->returnBook($patronId, $bookId);
+    public function returnBook(Request $request, $patronId, $bookId)
+    {
+        $book = $this->patron_service->returnBook($patronId, $bookId);
 
-         return response()->json([
-             'message' => 'Book returned successfully',
-             'data' => $book,
-         ], Response::HTTP_OK);
-     }
-
+        return response()->json([
+            'message' => 'Book returned successfully',
+            'data' => $book,
+        ], Response::HTTP_OK);
+    }
 }

@@ -1,5 +1,144 @@
 <?php
 
+/**
+ * @OA\Tag(
+ *     name="Books",
+ *     description="API Endpoints for managing books"
+ * )
+ */
+
+/**
+ * @OA\Get(
+ *     path="/api/v1/books",
+ *     tags={"Books"},
+ *     summary="Get all books",
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of books",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(ref="#/components/schemas/Book")
+ *         )
+ *     )
+ * )
+ */
+
+/**
+ * @OA\Post(
+ *     path="/api/v1/books",
+ *     tags={"Books"},
+ *     summary="Create a new book",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"title","description","isbn","publication_date","authors"},
+ *             @OA\Property(property="title", type="string"),
+ *             @OA\Property(property="description", type="string"),
+ *             @OA\Property(property="isbn", type="integer"),
+ *             @OA\Property(property="publication_date", type="string", format="date"),
+ *             @OA\Property(property="authors", type="array", @OA\Items(type="integer"))
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Book created successfully",
+ *         @OA\JsonContent(ref="#/components/schemas/Book")
+ *     )
+ * )
+ */
+
+/**
+ * @OA\Put(
+ *     path="/api/v1/books/{id}",
+ *     tags={"Books"},
+ *     summary="Update an existing book",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="title", type="string"),
+ *             @OA\Property(property="description", type="string"),
+ *             @OA\Property(property="isbn", type="integer"),
+ *             @OA\Property(property="publication_date", type="string", format="date"),
+ *             @OA\Property(property="authors", type="array", @OA\Items(type="integer"))
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Book updated successfully",
+ *         @OA\JsonContent(ref="#/components/schemas/Book")
+ *     ),
+ *     @OA\Response(response=404, description="Book not found")
+ * )
+ */
+
+/**
+ * @OA\Delete(
+ *     path="/api/v1/books/{id}",
+ *     tags={"Books"},
+ *     summary="Delete a book",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Book deleted successfully"
+ *     ),
+ *     @OA\Response(response=404, description="Book not found"),
+ *     @OA\Response(response=400, description="Book is currently borrowed")
+ * )
+ */
+
+/**
+ * @OA\Get(
+ *     path="/api/v1/books/search",
+ *     tags={"Books"},
+ *     summary="Search books by title and author IDs",
+ *     @OA\Parameter(
+ *         name="title",
+ *         in="query",
+ *         required=false,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Parameter(
+ *         name="authors",
+ *         in="query",
+ *         required=false,
+ *         @OA\Schema(type="array", @OA\Items(type="integer"))
+ *     ),
+ *     @OA\Response(response=200, description="Search results", @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Book"))),
+ *     @OA\Response(response=404, description="No books found")
+ * )
+ */
+
+/**
+ * @OA\Get(
+ *     path="/api/v1/authors/{authorId}/books",
+ *     tags={"Books"},
+ *     summary="Fetch all books by a specific author",
+ *     @OA\Parameter(
+ *         name="authorId",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of books by author",
+ *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Book"))
+ *     )
+ * )
+ */
+
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBookRequest;
@@ -18,11 +157,11 @@ class BookController extends Controller
      * Then, we have access to the service in whatever methods we need
      */
 
-    private BookService $bookService;
+    private BookService $book_service;
 
-    public function __construct(BookService $bookService)
+    public function __construct(BookService $book_service)
     {
-        $this->bookService = $bookService;
+        $this->book_service = $book_service;
     }
 
     /**
@@ -31,8 +170,10 @@ class BookController extends Controller
      */
     public function index()
     {
-        return response()->json(BookResource::collection($this->bookService->getAllBooks()),
-        Response::HTTP_OK) ;
+        return response()->json(
+            BookResource::collection($this->book_service->getAllBooks()),
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -42,7 +183,7 @@ class BookController extends Controller
     public function store(StoreBookRequest $request)
     {
         $validatedData = $request->validated();
-        $book = $this->bookService->store($validatedData, $validatedData['authors']);
+        $book = $this->book_service->store($validatedData, $validatedData['authors']);
         return response()->json(new BookResource($book), Response::HTTP_CREATED);
     }
 
@@ -58,8 +199,10 @@ class BookController extends Controller
         }
 
         // If book exists
-        return response()->json(new BookResource($this->bookService->update($request->validated(), $book)),
-        Response::HTTP_OK);
+        return response()->json(
+            new BookResource($this->book_service->update($request->validated(), $book)),
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -79,7 +222,7 @@ class BookController extends Controller
         }
 
         // If book exists and is not borrowed
-        $this->bookService->delete($book);
+        $this->book_service->delete($book);
 
         return response()->json(['message' => 'Book deleted successfully'], Response::HTTP_OK);
     }
@@ -88,14 +231,14 @@ class BookController extends Controller
     /**
      * Books
      * Point 3: Implementing a feature to search for books by title and author
-    */
+     */
     public function search(Request $request)
     {
         $title = $request->input('title');
         $authorIds = $request->input('authors');
 
         $authors = Author::whereIn('id', $authorIds)->get();
-        $books = $this->bookService->searchByTitleAndAuthor($title, $authors);
+        $books = $this->book_service->searchByTitleAndAuthor($title, $authors);
 
         if ($books->isEmpty()) {
             return response()->json(['error' => 'No books found for the specified title and author'], Response::HTTP_NOT_FOUND);
@@ -107,10 +250,10 @@ class BookController extends Controller
     /**
      * Books
      * Point 4:  fetching all books by a particular author
-    */
+     */
     public function fetchBooksByAuthor(Author $author)
     {
-        $books = $this->bookService->fetchBooksByAuthor($author);
+        $books = $this->book_service->fetchBooksByAuthor($author);
         return response()->json(BookResource::collection($books), Response::HTTP_OK);
     }
 }
