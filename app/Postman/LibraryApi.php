@@ -7,7 +7,7 @@ namespace App\Postman;
  *     version="1.0.0",
  *     title="Library Management System API",
  *     description="API documentation for Library Management System",
- *     @OA\Contact(email="support@example.com")
+ *     @OA\Contact(email="version.control.dev@gmail.com)
  * )
  *
  * @OA\Server(

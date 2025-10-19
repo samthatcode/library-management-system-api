@@ -1,40 +1,5 @@
 <?php
 
-/**
- * @OA\Schema(
- *     schema="Book",
- *     type="object",
- *     @OA\Property(property="id", type="integer"),
- *     @OA\Property(property="title", type="string"),
- *     @OA\Property(property="description", type="string"),
- *     @OA\Property(property="isbn", type="integer"),
- *     @OA\Property(property="publication_date", type="string", format="date"),
- *     @OA\Property(
- *         property="authors",
- *         type="array",
- *         @OA\Items(ref="#/components/schemas/Author")
- *     )
- * )
- *
- * @OA\Schema(
- *     schema="Author",
- *     type="object",
- *     @OA\Property(property="id", type="integer"),
- *     @OA\Property(property="first_name", type="string"),
- *     @OA\Property(property="last_name", type="string"),
- *     @OA\Property(property="books", type="array", @OA\Items(ref="#/components/schemas/Book"))
- * )
- *
- * @OA\Schema(
- *     schema="Patron",
- *     type="object",
- *     @OA\Property(property="id", type="integer"),
- *     @OA\Property(property="name", type="string"),
- *     @OA\Property(property="email", type="string"),
- *     @OA\Property(property="books", type="array", @OA\Items(ref="#/components/schemas/Book"))
- * )
- */
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAuthorRequest;

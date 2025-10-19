@@ -16,7 +16,7 @@ class AuthorService
     }
 
     // Retrieving all authors
-    public function getAllAuthors() : Collection
+    public function getAllAuthors(): Collection
     {
         return Author::with('books')->get();
     }
@@ -34,7 +34,7 @@ class AuthorService
     }
 
     // Updating author
-    public function update(Author $author, array $data): Author
+    public function update(Author $author, array $data)
     {
         $author->update($data);
 
@@ -57,5 +57,4 @@ class AuthorService
         // Delete the author
         return $author->delete();
     }
-
 }
