@@ -17,15 +17,29 @@ class BookService
         //
     }
 
-    // Retrieving all Books
-
+    /**
+     * Retrieve all books with their related authors.
+     *
+     * Results are cached for 60 minutes to improve performance.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<Book>
+     */
     public function getAllBooks(): Collection
     {
         return Cache::remember('all_books', 60, function () {
             return Book::with('authors')->get(['id', 'title', 'description', 'isbn', 'publication_date']);
         });
     }
-    // Creating a book
+
+    /**
+     * Create a new book and attach authors.
+     *
+     * The created book is cached for 60 minutes.
+     *
+     * @param array $bookData The book data including title, description, isbn, and publication_date
+     * @param array $authorIds Array of author IDs to attach to the book
+     * @return \App\Models\Book
+     */
     public function store(array $bookData, array $authorIds): Book
     {
         return Cache::remember('created_book', 60, function () use ($bookData, $authorIds) {
@@ -35,7 +49,16 @@ class BookService
             return $book;
         });
     }
-    // Updating a book
+
+    /**
+     * Update an existing book and sync its authors.
+     *
+     * The updated book is cached for 60 minutes.
+     *
+     * @param array $bookData The updated book data
+     * @param \App\Models\Book $book The book instance to update
+     * @return \App\Models\Book
+     */
     public function update(array $bookData, Book $book): Book
     {
         // Update book attributes
@@ -51,7 +74,15 @@ class BookService
 
         return $book->fresh(); // Return the fresh instance of the book
     }
-    // Deleting a book
+
+    /**
+     * Delete a book and detach all related authors.
+     *
+     * Books that are currently borrowed cannot be deleted.
+     *
+     * @param \App\Models\Book $book The book instance to delete
+     * @return bool True if deleted successfully, false if book is borrowed
+     */
     public function delete(Book $book): bool
     {
         // Check if the book is currently borrowed
@@ -69,7 +100,16 @@ class BookService
 
         return $deleted;
     }
-    // Searching books
+
+    /**
+     * Search for books by title and author.
+     *
+     * Results are cached for 60 minutes using a unique cache key based on search parameters.
+     *
+     * @param string $title The title of the book to search for
+     * @param \Illuminate\Database\Eloquent\Collection $authors Collection of Author models to filter by
+     * @return \Illuminate\Database\Eloquent\Collection<Book>
+     */
     public function searchByTitleAndAuthor(string $title, $authors)
     {
         $cacheKey = 'search_' . md5($title . serialize($authors));
@@ -83,7 +123,15 @@ class BookService
                 ->get(['id', 'title']);
         });
     }
-    // Fetch book by author name
+
+    /**
+     * Fetch all books written by a specific author.
+     *
+     * Results are cached for 60 minutes per author.
+     *
+     * @param \App\Models\Author $author The author whose books to retrieve
+     * @return \Illuminate\Database\Eloquent\Collection<Book>
+     */
     public function fetchBooksByAuthor(Author $author)
     {
         $cacheKey = 'author_books_' . $author->id;

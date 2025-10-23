@@ -15,13 +15,22 @@ class AuthorService
         //
     }
 
-    // Retrieving all authors
-    public function getAllAuthors() : Collection
+    /**
+     * Retrieve all authors with their related books.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<Author>
+     */
+    public function getAllAuthors(): Collection
     {
         return Author::with('books')->get();
     }
 
-    // Creating author
+    /**
+     * Create a new author and attach their books.
+     *
+     * @param array $data The author data including first_name, last_name, and optional books array
+     * @return \App\Models\Author
+     */
     public function create(array $data): Author
     {
         $author = Author::create($data);
@@ -33,8 +42,14 @@ class AuthorService
         return $author;
     }
 
-    // Updating author
-    public function update(Author $author, array $data): Author
+    /**
+     * Update an existing author and sync their books.
+     *
+     * @param \App\Models\Author $author The author instance to update
+     * @param array $data The updated author data
+     * @return \App\Models\Author
+     */
+    public function update(Author $author, array $data)
     {
         $author->update($data);
 
@@ -45,7 +60,12 @@ class AuthorService
         return $author->fresh();
     }
 
-    // Deleting author
+    /**
+     * Delete an author and detach all related books.
+     *
+     * @param \App\Models\Author $author The author instance to delete
+     * @return bool
+     */
     public function delete(Author $author): bool
     {
         // Check if the author has written any books
@@ -57,5 +77,4 @@ class AuthorService
         // Delete the author
         return $author->delete();
     }
-
 }

@@ -1,0 +1,697 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Library Management System API",
+        "description": "API documentation for Library Management System",
+        "contact": {
+            "email": "version.control.dev@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/api/v1",
+            "description": "Local Development Server"
+        }
+    ],
+    "paths": {
+        "/books": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get all books",
+                "operationId": "a0dcf31e81a2a7757a52e5e8219ad456",
+                "responses": {
+                    "200": {
+                        "description": "List of books",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Book"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Create a new book",
+                "operationId": "21cd00d9df2dd52b8ee0919b5ced5acf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "isbn",
+                                    "publication_date",
+                                    "authors"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "isbn": {
+                                        "type": "integer"
+                                    },
+                                    "publication_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "authors": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/books/{id}": {
+            "put": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Update a book",
+                "operationId": "03da0547248e5fad5dda29c9dd12b923",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Book"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Book updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Book not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Delete a book",
+                "operationId": "73c7dac96bddfebd288502a4cc82945e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Book deleted"
+                    },
+                    "404": {
+                        "description": "Book not found"
+                    },
+                    "400": {
+                        "description": "Book is currently borrowed"
+                    }
+                }
+            }
+        },
+        "/books/search": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Search books by title and author",
+                "operationId": "6d2d105ec06f4f3b76cf333116c0ae83",
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "authors",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Book"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No books found"
+                    }
+                }
+            }
+        },
+        "/authors/{authorId}/books": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Fetch books by author",
+                "operationId": "08d5d761a068120499800f84bcb8c2eb",
+                "parameters": [
+                    {
+                        "name": "authorId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Books by author",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Book"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/authors": {
+            "get": {
+                "tags": [
+                    "Authors"
+                ],
+                "summary": "Get all authors",
+                "operationId": "93362eccb2022caaf3019a131d59b6f9",
+                "responses": {
+                    "200": {
+                        "description": "List of authors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Author"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Authors"
+                ],
+                "summary": "Create an author",
+                "operationId": "e84a7878ae98f1ce4e1ed6a52523a36b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "first_name",
+                                    "last_name",
+                                    "books"
+                                ],
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string"
+                                    },
+                                    "last_name": {
+                                        "type": "string"
+                                    },
+                                    "books": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Author created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Author"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/authors/{id}": {
+            "put": {
+                "tags": [
+                    "Authors"
+                ],
+                "summary": "Update an author",
+                "operationId": "f07577db9e114293047b96a2cd9e6e58",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Author"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Author updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Author"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Author not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Authors"
+                ],
+                "summary": "Delete an author",
+                "operationId": "8ec367357653e198ed023b1bf5aba654",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Author deleted"
+                    },
+                    "404": {
+                        "description": "Author not found"
+                    }
+                }
+            }
+        },
+        "/patrons": {
+            "get": {
+                "tags": [
+                    "Patrons"
+                ],
+                "summary": "Get all patrons",
+                "operationId": "fd79aafd95237b66d4f566d5e224a069",
+                "responses": {
+                    "200": {
+                        "description": "List of patrons",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Patron"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Patrons"
+                ],
+                "summary": "Create a patron",
+                "operationId": "969603616c152e755a741e590dcf70f7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Patron created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Patron"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/patrons/{id}": {
+            "put": {
+                "tags": [
+                    "Patrons"
+                ],
+                "summary": "Update a patron",
+                "operationId": "99de585671325b15a2a759706f7a9b43",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Patron"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Patron updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Patron"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Patron not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Patrons"
+                ],
+                "summary": "Delete a patron",
+                "operationId": "93f946c594ae757d11d7793be65e9977",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Patron deleted"
+                    },
+                    "404": {
+                        "description": "Patron not found"
+                    },
+                    "400": {
+                        "description": "Patron cannot be deleted if associated with books"
+                    }
+                }
+            }
+        },
+        "/patrons/{patronId}/books/{bookId}/borrow": {
+            "post": {
+                "tags": [
+                    "Patrons"
+                ],
+                "summary": "Borrow a book",
+                "operationId": "ac72f6749c202ccb1bbccb8bfc6594df",
+                "parameters": [
+                    {
+                        "name": "patronId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Book borrowed successfully"
+                    },
+                    "404": {
+                        "description": "Patron or book not found"
+                    },
+                    "400": {
+                        "description": "Book already borrowed"
+                    }
+                }
+            }
+        },
+        "/patrons/{patronId}/books/{bookId}/return": {
+            "post": {
+                "tags": [
+                    "Patrons"
+                ],
+                "summary": "Return a book",
+                "operationId": "86bee282af97e4689d72b24ea03c36af",
+                "parameters": [
+                    {
+                        "name": "patronId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Book returned successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Patron or book not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Book": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "isbn": {
+                        "type": "integer"
+                    },
+                    "publication_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "authors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Author"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Author": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "books": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Book"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Patron": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "books": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Book"
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Books",
+            "description": "Operations related to books"
+        },
+        {
+            "name": "Authors",
+            "description": "Operations related to authors"
+        },
+        {
+            "name": "Patrons",
+            "description": "Operations related to patrons"
+        }
+    ]
+}
