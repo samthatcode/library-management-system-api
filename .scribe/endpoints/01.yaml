@@ -1,0 +1,378 @@
+name: 'Authors Management'
+description: |-
+
+  APIs for managing and retrieving authors within the library system.
+
+  These endpoints handle CRUD operations for authors.
+
+  Base URL: `/api/v1/authors`
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/authors
+    metadata:
+      groupName: 'Authors Management'
+      groupDescription: |-
+
+        APIs for managing and retrieving authors within the library system.
+
+        These endpoints handle CRUD operations for authors.
+
+        Base URL: `/api/v1/authors`
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display a listing of all available authors.'
+      description: ''
+      authenticated: false
+      deprecated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "first_name": "F. Scott",
+                "last_name": "Fitzgerald",
+                "books": [
+                  {
+                    "id": 1,
+                    "title": "The Great Gatsby"
+                  }
+                ],
+                "created_at": "2025-10-18T12:00:00Z"
+              }
+            ]
+          }
+        headers: []
+        description: Success
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/authors
+    metadata:
+      groupName: 'Authors Management'
+      groupDescription: |-
+
+        APIs for managing and retrieving authors within the library system.
+
+        These endpoints handle CRUD operations for authors.
+
+        Base URL: `/api/v1/authors`
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store a newly created author.'
+      description: ''
+      authenticated: false
+      deprecated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      first_name:
+        name: first_name
+        description: 'The first name of the author.'
+        required: true
+        example: 'F. Scott'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      last_name:
+        name: last_name
+        description: 'The last name of the author.'
+        required: true
+        example: Fitzgerald
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      books:
+        name: books
+        description: 'Array of book IDs associated with the author.'
+        required: true
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      'books.*':
+        name: 'books.*'
+        description: 'Each book ID must exist in the books table.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      first_name: 'F. Scott'
+      last_name: Fitzgerald
+      books:
+        - 1
+        - 2
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "data": {
+              "id": 1,
+              "first_name": "F. Scott",
+              "last_name": "Fitzgerald",
+              "books": [
+                {
+                  "id": 1,
+                  "title": "The Great Gatsby"
+                }
+              ],
+              "created_at": "2025-10-18T12:00:00Z"
+            }
+          }
+        headers: []
+        description: Created
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/v1/authors/{id}'
+    metadata:
+      groupName: 'Authors Management'
+      groupDescription: |-
+
+        APIs for managing and retrieving authors within the library system.
+
+        These endpoints handle CRUD operations for authors.
+
+        Base URL: `/api/v1/authors`
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing author.'
+      description: ''
+      authenticated: false
+      deprecated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the author.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      author:
+        name: author
+        description: 'The ID of the author to update.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+      author: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      first_name:
+        name: first_name
+        description: 'optional The updated first name of the author.'
+        required: false
+        example: 'Francis Scott'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      last_name:
+        name: last_name
+        description: 'optional The updated last name of the author.'
+        required: false
+        example: Fitzgerald
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      books:
+        name: books
+        description: 'optional Updated array of book IDs associated with the author.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      'books.*':
+        name: 'books.*'
+        description: 'optional Each book ID must exist in the books table.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      first_name: 'Francis Scott'
+      last_name: Fitzgerald
+      books:
+        - 1
+        - 2
+        - 3
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 1,
+              "first_name": "Francis Scott",
+              "last_name": "Fitzgerald",
+              "books": [
+                {
+                  "id": 1,
+                  "title": "The Great Gatsby"
+                }
+              ],
+              "updated_at": "2025-10-18T15:00:00Z"
+            }
+          }
+        headers: []
+        description: Updated
+        custom: []
+      -
+        status: 404
+        content: '{"error": "Author not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/v1/authors/{id}'
+    metadata:
+      groupName: 'Authors Management'
+      groupDescription: |-
+
+        APIs for managing and retrieving authors within the library system.
+
+        These endpoints handle CRUD operations for authors.
+
+        Base URL: `/api/v1/authors`
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete an author.'
+      description: ''
+      authenticated: false
+      deprecated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the author.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      author:
+        name: author
+        description: 'The ID of the author to delete.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+      author: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message": "Author deleted successfully"}'
+        headers: []
+        description: Deleted
+        custom: []
+      -
+        status: 404
+        content: '{"error": "Author not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
